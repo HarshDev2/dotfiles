@@ -16,6 +16,13 @@
     nushell
   ];
 
+  programs.zellij = {
+    enable = true;
+    settings = {
+      default_shell = "nu";
+    };
+  };
+
   xdg.configFile."hypr".source = ./configs/hypr;
   xdg.configFile."helix".source = ./configs/helix;
   xdg.configFile."ghostty".source = ./configs/ghostty;
