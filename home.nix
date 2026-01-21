@@ -14,16 +14,13 @@
     helix
     zellij
     nushell
+    btop
+    hyprlock
+    less
   ];
 
-  programs.zellij = {
-    enable = true;
-    settings = {
-      default_shell = "nu";
-    };
-  };
-
   xdg.configFile."hypr".source = ./configs/hypr;
+  xdg.configFile."zellij".source = ./configs/zellij;
   xdg.configFile."helix".source = ./configs/helix;
   xdg.configFile."ghostty".source = ./configs/ghostty;
   xdg.configFile."nushell" = {
