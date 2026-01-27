@@ -17,12 +17,14 @@
     btop
     hyprlock
     less
+    waybar
   ];
 
   xdg.configFile."hypr".source = ./configs/hypr;
   xdg.configFile."zellij".source = ./configs/zellij;
   xdg.configFile."helix".source = ./configs/helix;
   xdg.configFile."ghostty".source = ./configs/ghostty;
+  xdg.configFile."waybar".source = ./configs/waybar;
   xdg.configFile."nushell" = {
     source = ./configs/nushell;
     recursive = true;

@@ -334,7 +334,7 @@ pane_frames false
 // Default: "default"
 // (Requires restart)
 //
-default_layout "compact"
+default_layout "welcome"
 
 // Choose the mode that zellij uses when starting up.
 // Default: normal
