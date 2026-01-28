@@ -1,0 +1,24 @@
+#!/bin/bash
+# emoji - rofi based emoji picker for wayland
+
+EMOJI_FILE="$HOME/.config/rofi/emoji-list"
+
+# Download emoji list if it doesn't exist
+if [ ! -f "$EMOJI_FILE" ]; then
+    notify-send "Emoji Picker" "Downloading emoji list..."
+    curl -sL "https://raw.githubusercontent.com/muan/emojilib/main/dist/emoji-en-US.json" | \
+        jq -r 'to_entries[] | "\(.key) \(.value | join(" "))"' > "$EMOJI_FILE"
+fi
+
+# Show rofi menu and get selection
+SELECTED=$(cat "$EMOJI_FILE" | rofi -dmenu -i -p "Emoji" -theme ~/.config/rofi/theme.rasi -theme-str 'element-icon {size: 0; margin: 0;}')
+
+if [ -n "$SELECTED" ]; then
+    # Extract just the emoji (first character)
+    EMOJI=$(echo "$SELECTED" | cut -d' ' -f1)
+
+    # Copy to clipboard
+    printf '%s' "$EMOJI" | wl-copy
+
+    notify-send "Copied" "$EMOJI"
+fi

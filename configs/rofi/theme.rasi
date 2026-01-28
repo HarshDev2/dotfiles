@@ -1,0 +1,84 @@
+/**
+ * Modern Rofi Theme
+ * Matching Waybar/Hyprland color scheme
+ */
+
+* {
+    bg: #1a1b26dd;
+    bg-alt: #313244;
+    fg: #cdd6f4;
+    fg-alt: #6c7086;
+
+    blue: #89b4fa;
+    purple: #cba6f7;
+    cyan: #89dceb;
+    green: #a6e3a1;
+    red: #f38ba8;
+
+    background-color: transparent;
+    text-color: @fg;
+    font: "JetBrainsMono Nerd Font 12";
+}
+
+window {
+    background-color: @bg;
+    border: 2px;
+    border-color: @blue;
+    border-radius: 12px;
+    padding: 15px;
+    width: 600px;
+}
+
+mainbox {
+    children: [inputbar, listview];
+    spacing: 15px;
+}
+
+inputbar {
+    children: [prompt, entry];
+    spacing: 10px;
+    background-color: @bg-alt;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+prompt {
+    text-color: @blue;
+    padding: 0px;
+}
+
+entry {
+    placeholder: "Search...";
+    placeholder-color: @fg-alt;
+}
+
+listview {
+    lines: 8;
+    columns: 1;
+    spacing: 5px;
+    scrollbar: false;
+}
+
+element {
+    padding: 10px;
+    border-radius: 8px;
+}
+
+element normal.normal {
+    background-color: transparent;
+    text-color: @fg;
+}
+
+element selected.normal {
+    background-color: @bg-alt;
+    text-color: @blue;
+}
+
+element-icon {
+    size: 24px;
+    margin: 0 10px 0 0;
+}
+
+element-text {
+    vertical-align: 0.5;
+}

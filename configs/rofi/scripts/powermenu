@@ -1,0 +1,44 @@
+#!/bin/bash
+# powermenu - rofi based power menu
+
+OPTIONS="Lock
+Suspend
+Logout
+Reboot
+Shutdown"
+
+SELECTED=$(echo -e "$OPTIONS" | rofi -dmenu -i -p "Power" \
+    -theme ~/.config/rofi/theme.rasi \
+    -theme-str 'element-icon {size: 0; margin: 0;}')
+
+confirm() {
+    echo -e "Yes\nNo" | rofi -dmenu -i -p "Confirm $1?" \
+        -theme ~/.config/rofi/theme.rasi \
+        -theme-str 'element-icon {size: 0; margin: 0;} listview {lines: 2;}'
+}
+
+case "$SELECTED" in
+    "Lock")
+        hyprlock || swaylock || loginctl lock-session
+        ;;
+    "Suspend")
+        if [[ "$(confirm Suspend)" == "Yes" ]]; then
+            systemctl suspend
+        fi
+        ;;
+    "Logout")
+        if [[ "$(confirm Logout)" == "Yes" ]]; then
+            hyprctl dispatch exit
+        fi
+        ;;
+    "Reboot")
+        if [[ "$(confirm Reboot)" == "Yes" ]]; then
+            systemctl reboot
+        fi
+        ;;
+    "Shutdown")
+        if [[ "$(confirm Shutdown)" == "Yes" ]]; then
+            systemctl poweroff
+        fi
+        ;;
+esac

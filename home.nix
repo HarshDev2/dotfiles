@@ -32,6 +32,10 @@
     source = ./configs/nushell;
     recursive = true;
   };
+  xdg.configFile."rofi" = {
+    source = ./configs/rofi;
+    recursive = true;
+  };
 
   xdg.configFile."Kvantum/kvantum.kvconfig".text = ''
     [General]
