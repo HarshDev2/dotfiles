@@ -49,3 +49,4 @@
 # resize-overlay-duration = 4s 200ms
 
 command = $HOME/.nix-profile/bin/nu
+background = #1e1e2e
