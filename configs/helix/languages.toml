@@ -1,3 +1,20 @@
 [[language]]
 name = "c"
 auto-format = true
+
+[[language]]
+name = "c-sharp"
+auto-format = true
+formatter = { command = "csharpier", args = ["format"]}
+
+[[language]]
+name = "python"
+auto-format = true
+language-servers = ["pyright", "ruff"]
+
+[language-server.pyright.config.python]
+pythonPath = ".venv/bin/python"
+
+[language-server.ruff]
+command = "ruff"
+args = ["server"]

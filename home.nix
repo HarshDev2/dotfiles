@@ -5,7 +5,10 @@
   home.homeDirectory = "/home/idk24";
   home.stateVersion = "24.11";
 
+  nixpkgs.config.allowUnfree = true;
+
   programs.home-manager.enable = true;
+  programs.vscode.enable = true;
 
   home.packages = with pkgs; [
     niri

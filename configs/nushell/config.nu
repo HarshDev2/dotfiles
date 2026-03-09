@@ -29,3 +29,5 @@ $env.PATH = ($env.PATH | split row (char esep) | prepend "/nix/var/nix/profiles/
 if ('~/.nix-profile/etc/profile.d/nix.sh' | path exists) {
     ^bash -c 'source ~/.nix-profile/etc/profile.d/nix.sh && env' | lines | parse "{key}={value}" | reduce -f {} {|it, acc| $acc | upsert $it.key $it.value } | load-env
 }
+
+$env.PATH = ($env.PATH | append ($nu.home-path | path join ".dotnet" "tools"))
