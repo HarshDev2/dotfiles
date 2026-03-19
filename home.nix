@@ -10,6 +10,119 @@
   programs.home-manager.enable = true;
   programs.vscode.enable = true;
 
+  programs.firefox = {
+    enable = true;
+    package = null;  # use system Zen browser, only manage config
+    profiles.default = {
+      isDefault = true;
+      settings = {
+        "privacy.trackingprotection.enabled" = true;
+        "browser.newtabpage.enabled" = false;
+        "browser.startup.homepage" = "https://search.localhost";
+        "browser.startup.page" = 1;  # 0=blank, 1=homepage, 3=restore session
+      };
+      search = {
+        default = "OmniSearch";
+        engines = {
+          "OmniSearch" = {
+            urls = [{ template = "https://search.localhost/search?q={searchTerms}"; }];
+            definedAliases = [ "@o" ];
+          };
+        };
+        force = true;
+      };
+    };
+  };
+
+  systemd.user.services.portless-alias-search = {
+    Unit = {
+      Description = "Register omnisearch alias with portless";
+    };
+    Service = {
+      Type = "oneshot";
+      ExecStartPre = "/bin/sh -c 'sleep 5'";
+      ExecStart = "${config.home.homeDirectory}/.bun/bin/portless alias search 8087";
+      RemainAfterExit = true;
+    };
+    Install = {
+      WantedBy = [ "default.target" ];
+    };
+  };
+
+  xdg.configFile."omnisearch" = {
+    source = ./configs/omnisearch;
+    recursive = true;
+  };
+
+  home.file.".config/systemd-system/portless-proxy.service".text = let
+    home = config.home.homeDirectory;
+    portless = "${home}/.bun/bin/portless";
+  in ''
+    [Unit]
+    Description=Portless proxy (port 443)
+    After=network.target
+
+    [Service]
+    ExecStart=${portless} proxy start --foreground --https -p 443
+    ExecStartPost=/bin/sh -c 'sleep 3 && HOME=${home} PORTLESS_STATE_DIR=${home}/.portless ${portless} alias search 8087'
+    Restart=on-failure
+    RestartSec=3
+    Environment=HOME=${home}
+    Environment=PATH=${home}/.bun/bin:/usr/bin:/bin
+    Environment=PORTLESS_STATE_DIR=${home}/.portless
+
+    [Install]
+    WantedBy=multi-user.target
+  '';
+
+  home.file.".config/systemd-system/install.sh" = {
+    executable = true;
+    text = ''
+      #!/bin/sh
+      set -e
+      OMNISEARCH_SRC="$HOME/.config/omnisearch"
+      OMNISEARCH_DST="/etc/omnisearch"
+
+      # Copy omnisearch config, templates, and static files
+      # (copy instead of symlink — omnisearch user can't traverse $HOME)
+      echo "Syncing omnisearch configuration..."
+      sudo mkdir -p "$OMNISEARCH_DST/templates" "$OMNISEARCH_DST/static"
+      # Remove old symlinks first to avoid "same file" errors
+      sudo find "$OMNISEARCH_DST" -maxdepth 2 -type l -delete
+      sudo cp -L "$OMNISEARCH_SRC/config.ini" "$OMNISEARCH_DST/config.ini"
+      sudo cp -L "$OMNISEARCH_SRC"/templates/* "$OMNISEARCH_DST/templates/"
+      sudo cp -L "$OMNISEARCH_SRC"/static/* "$OMNISEARCH_DST/static/"
+      sudo chown -R omnisearch:omnisearch "$OMNISEARCH_DST"
+      sudo systemctl restart omnisearch
+      echo "Omnisearch configuration synced."
+
+      # Install portless-proxy system service
+      SERVICE_SRC="$HOME/.config/systemd-system/portless-proxy.service"
+      SERVICE_DST="/etc/systemd/system/portless-proxy.service"
+
+      if [ ! -L "$SERVICE_DST" ] || [ "$(readlink -f "$SERVICE_DST")" != "$SERVICE_SRC" ]; then
+        echo "Installing portless-proxy system service..."
+        sudo ln -sf "$SERVICE_SRC" "$SERVICE_DST"
+        sudo systemctl daemon-reload
+        sudo systemctl enable --now portless-proxy
+        echo "Done."
+      else
+        echo "portless-proxy service already installed."
+      fi
+    '';
+  };
+
+  home.activation.portlessReminder = config.lib.dag.entryAfter [ "writeBoundary" ] ''
+    if [ ! -L /etc/systemd/system/portless-proxy.service ] || [ ! -L /etc/omnisearch/config.ini ]; then
+      echo ""
+      echo "┌───────────────────────────────────────────────────────┐"
+      echo "│  Run: ~/.config/systemd-system/install.sh             │"
+      echo "│  to sync omnisearch config & enable portless proxy    │"
+      echo "└───────────────────────────────────────────────────────┘"
+      echo ""
+    fi
+  '';
+
   home.packages = with pkgs; [
     niri
     fd
