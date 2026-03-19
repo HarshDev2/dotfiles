@@ -296,13 +296,16 @@
 
             function updateClock() {
                 const now = new Date();
-                document.getElementById('hours').textContent = String(now.getHours()).padStart(2, '0');
-                document.getElementById('minutes').textContent = String(now.getMinutes()).padStart(2, '0');
+                const opts = { timeZone: 'Asia/Kolkata' };
+                const h = now.toLocaleString('en-US', { ...opts, hour: '2-digit', hour12: false });
+                const m = now.toLocaleString('en-US', { ...opts, minute: '2-digit' });
+                document.getElementById('hours').textContent = h.padStart(2, '0');
+                document.getElementById('minutes').textContent = m.padStart(2, '0');
 
-                const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-                document.getElementById('date').textContent =
-                    days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate();
+                const day = now.toLocaleString('en-US', { ...opts, weekday: 'long' });
+                const month = now.toLocaleString('en-US', { ...opts, month: 'long' });
+                const date = now.toLocaleString('en-US', { ...opts, day: 'numeric' });
+                document.getElementById('date').textContent = day + ', ' + month + ' ' + date;
             }
 
             function renderLinks() {
