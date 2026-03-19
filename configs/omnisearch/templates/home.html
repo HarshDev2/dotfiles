@@ -4,35 +4,324 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-        <title>
-            OmniSearch
-        </title>
+        <title>~/home</title>
         <link rel="stylesheet" href="static/main.css">
-	<link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+        <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
         <link rel="search"
         type="application/opensearchdescription+xml"
         title="OmniSearch" href="/opensearch.xml">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --bg: #1a1b26;
+                --surface: #24283b;
+                --surface-hover: #292e42;
+                --border: #45475a;
+                --text: #cdd6f4;
+                --text-dim: #a6adc8;
+                --text-muted: #6c7086;
+                --accent: #89b4fa;
+                --accent-glow: rgba(137, 180, 250, 0.08);
+                --green: #a6e3a1;
+                --peach: #fab387;
+                --pink: #f5c2e7;
+                --red: #f38ba8;
+                --yellow: #f9e2af;
+                --teal: #94e2d5;
+                --mauve: #cba6f7;
+            }
+
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+
+            body {
+                background: var(--bg);
+                color: var(--text);
+                font-family: 'Outfit', sans-serif;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                position: relative;
+            }
+
+            body::before {
+                content: '';
+                position: fixed;
+                inset: 0;
+                background:
+                    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(137,180,250,0.04) 0%, transparent 60%),
+                    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(203,166,247,0.03) 0%, transparent 50%);
+                pointer-events: none;
+            }
+
+            .noise {
+                position: fixed;
+                inset: 0;
+                opacity: 0.015;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+                background-repeat: repeat;
+                pointer-events: none;
+                z-index: 999;
+            }
+
+            .container {
+                width: 100%;
+                max-width: 720px;
+                padding: 0 24px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0;
+                animation: fadeUp 0.6s ease both;
+            }
+
+            @keyframes fadeUp {
+                from { opacity: 0; transform: translateY(12px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            /* Clock */
+            .clock {
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 6.5rem;
+                font-weight: 300;
+                color: var(--text);
+                line-height: 1;
+                margin-bottom: 6px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0;
+            }
+
+            .clock .separator {
+                color: var(--accent);
+                width: 0.5em;
+                text-align: center;
+            }
+
+            @keyframes blink {
+                50% { opacity: 0.3; }
+            }
+
+            .date-line {
+                font-size: 0.95rem;
+                color: var(--text-muted);
+                font-weight: 400;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                margin-bottom: 40px;
+            }
+
+            .greeting {
+                font-size: 1.3rem;
+                font-weight: 300;
+                color: var(--text-dim);
+                margin-bottom: 32px;
+            }
+
+            /* Search */
+            .search-wrapper {
+                width: 100%;
+                position: relative;
+                margin-bottom: 48px;
+            }
+
+            .search-wrapper svg {
+                position: absolute;
+                left: 18px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 18px;
+                height: 18px;
+                color: var(--text-muted);
+                pointer-events: none;
+                transition: color 0.2s;
+            }
+
+            .search-wrapper:focus-within svg {
+                color: var(--accent);
+            }
+
+            .home-search {
+                width: 100%;
+                padding: 14px 20px 14px 48px;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                color: var(--text);
+                font-family: 'Outfit', sans-serif;
+                font-size: 1rem;
+                font-weight: 400;
+                outline: none;
+                transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            }
+
+            .home-search::placeholder {
+                color: var(--text-muted);
+            }
+
+            .home-search:focus {
+                border-color: var(--accent);
+                box-shadow: 0 0 0 3px var(--accent-glow);
+                background: var(--surface-hover);
+            }
+
+            /* Quick Links */
+            .links-grid {
+                display: grid;
+                grid-template-columns: repeat(6, 1fr);
+                gap: 12px;
+                width: 100%;
+            }
+
+            .link-tile {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                padding: 16px 8px;
+                background: var(--surface);
+                border: 1px solid transparent;
+                border-radius: 12px;
+                text-decoration: none;
+                transition: all 0.2s ease;
+                cursor: pointer;
+            }
+
+            .link-tile:hover {
+                border-color: var(--border);
+                background: var(--surface-hover);
+                transform: translateY(-2px);
+            }
+
+            .link-icon {
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: var(--bg);
+                flex-shrink: 0;
+            }
+
+            .link-label {
+                font-size: 0.7rem;
+                color: var(--text-muted);
+                font-weight: 400;
+                letter-spacing: 0.5px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 100%;
+            }
+
+            .link-tile:hover .link-label {
+                color: var(--text-dim);
+            }
+
+            /* Tile colors */
+            .tile-blue .link-icon { background: var(--accent); }
+            .tile-green .link-icon { background: var(--green); }
+            .tile-peach .link-icon { background: var(--peach); }
+            .tile-pink .link-icon { background: var(--pink); }
+            .tile-red .link-icon { background: var(--red); }
+            .tile-yellow .link-icon { background: var(--yellow); }
+            .tile-teal .link-icon { background: var(--teal); }
+            .tile-mauve .link-icon { background: var(--mauve); }
+
+            /* Footer */
+            .footer {
+                position: fixed;
+                bottom: 20px;
+                font-size: 0.75rem;
+                color: var(--text-muted);
+                opacity: 0.4;
+                letter-spacing: 1px;
+            }
+
+            @media (max-width: 600px) {
+                .clock {
+                    font-size: 3.8rem;
+                    letter-spacing: -2px;
+                }
+                .clock .separator { width: 1.2rem; }
+                .links-grid {
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 10px;
+                }
+                .greeting { font-size: 1.1rem; }
+                .date-line { font-size: 0.8rem; }
+                .container { padding: 0 16px; }
+            }
+        </style>
     </head>
 
     <body>
-        <div class="view-home">
-            <div class="container">
-                <h1 class="hero-logo">
-                    Omni<span>Search</span>
-                </h1>
-                <form action="/search" class="home-search-form">
-                    <div class="search-input-wrapper">
-                        <input name="q" type="text" class="search-box" placeholder="Search the web..."
-                        autofocus autocomplete="off">
-                    </div>
-                    <div class="buttons">
-                        <button type="submit" class="btn-primary">
-                            Search
-                        </button>
-                    </div>
-                </form>
+        <div class="noise"></div>
+        <div class="container">
+<div class="clock" id="clock">
+                <span id="hours">00</span><span class="separator">:</span><span id="minutes">00</span>
             </div>
+            <div class="date-line" id="date"></div>
+
+            <form action="/search" method="GET" class="search-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+                </svg>
+                <input name="q" type="text" class="home-search" placeholder="Search..." autofocus autocomplete="off">
+            </form>
+
+            <div class="links-grid" id="links"></div>
         </div>
+
+        <div class="footer">omnisearch</div>
+
+        <script>
+            const LINKS = [
+                { name: 'GitHub', url: 'https://github.com', icon: 'GH', color: 'mauve' },
+                { name: 'YouTube', url: 'https://youtube.com', icon: 'YT', color: 'red' },
+                { name: 'Reddit', url: 'https://reddit.com', icon: 'RE', color: 'peach' },
+                { name: 'Discord', url: 'https://discord.com', icon: 'DC', color: 'blue' },
+                { name: 'Twitter', url: 'https://x.com', icon: 'TW', color: 'teal' },
+                { name: 'Mail', url: 'https://mail.google.com', icon: 'GM', color: 'yellow' },
+            ];
+
+            function updateClock() {
+                const now = new Date();
+                document.getElementById('hours').textContent = String(now.getHours()).padStart(2, '0');
+                document.getElementById('minutes').textContent = String(now.getMinutes()).padStart(2, '0');
+
+                const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                document.getElementById('date').textContent =
+                    days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate();
+            }
+
+            function renderLinks() {
+                const grid = document.getElementById('links');
+                grid.innerHTML = LINKS.map(l =>
+                    `<a href="${l.url}" class="link-tile tile-${l.color}">
+                        <div class="link-icon">${l.icon}</div>
+                        <span class="link-label">${l.name}</span>
+                    </a>`
+                ).join('');
+            }
+
+            updateClock();
+            setInterval(updateClock, 1000);
+            renderLinks();
+
+            // Steal focus from URL bar to search input
+            setTimeout(() => document.querySelector('.home-search').focus(), 100);
+        </script>
     </body>
 
 </html>
