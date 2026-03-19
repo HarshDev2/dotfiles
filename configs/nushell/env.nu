@@ -19,3 +19,6 @@
 
 # Add bun to PATH
 $env.PATH = ($env.PATH | prepend $"($env.HOME)/.bun/bin")
+
+# Add Vite+ to PATH
+$env.PATH = ($env.PATH | prepend $"($env.HOME)/.vite-plus/bin")
