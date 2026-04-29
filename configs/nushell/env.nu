@@ -17,6 +17,8 @@
 # You can remove these comments if you want or leave
 # them for future reference.
 
+$env.TZDIR = "/usr/share/zoneinfo"
+
 # Add bun to PATH
 $env.PATH = ($env.PATH | prepend $"($env.HOME)/.bun/bin")
 

@@ -18,8 +18,8 @@ set_wallpaper() {
         return 1
     fi
 
-    # Set wallpaper with swww
-    swww img "$wallpaper" --transition-type fade --transition-duration 1
+    # Set wallpaper with awww
+    awww img "$wallpaper" --transition-type fade --transition-duration 1
 
     # Save current wallpaper
     echo "$wallpaper" > ~/.config/hypr/current_wallpaper

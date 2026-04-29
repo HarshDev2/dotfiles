@@ -1,167 +1,17 @@
 { config, pkgs, ... }:
 
-let
-  nur = import <nur> { inherit pkgs; };
-in
 {
-  home.username = "idk24";
-  home.homeDirectory = "/home/idk24";
+  home.username = "yabai";
+  home.homeDirectory = "/home/yabai";
   home.stateVersion = "24.11";
+
+  home.sessionVariables = {
+    TZ = "Asia/Kolkata";
+  };
 
   nixpkgs.config.allowUnfree = true;
 
   programs.home-manager.enable = true;
-  programs.vscode.enable = true;
-
-  programs.firefox = {
-    enable = true;
-    profiles.default = {
-      isDefault = true;
-      settings = {
-        "privacy.trackingprotection.enabled" = true;
-        "browser.newtabpage.enabled" = false;
-        "browser.startup.homepage" = "https://search.localhost";
-        "browser.startup.page" = 1;
-        "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-        "ui.systemUsesDarkTheme" = 1;
-        "browser.theme.content-theme" = 0;
-        "browser.theme.toolbar-theme" = 0;
-        "layout.css.prefers-color-scheme.content-override" = 0;
-        "browser.toolbars.bookmarks.visibility" = "never";
-        "identity.fxaccounts.enabled" = false;
-        "browser.aboutwelcome.enabled" = false;
-        "datareporting.policy.dataSubmissionEnabled" = false;
-        "toolkit.telemetry.enabled" = false;
-        "toolkit.telemetry.unified" = false;
-        "app.shield.optoutstudies.enabled" = false;
-        "browser.discovery.enabled" = false;
-        "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
-        "browser.newtabpage.activity-stream.showSponsored" = false;
-        "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
-        "extensions.pocket.enabled" = false;
-        "browser.urlbar.clickSelectsAll" = true;
-
-        # Privacy hardening
-        "browser.safebrowsing.malware.enabled" = false;
-        "browser.safebrowsing.phishing.enabled" = false;
-        "browser.safebrowsing.downloads.enabled" = false;
-        "browser.safebrowsing.downloads.remote.enabled" = false;
-        "network.prefetch-next" = true;
-        "network.dns.disablePrefetch" = true;
-        "network.predictor.enabled" = false;
-        "network.http.speculative-parallel-limit" = 6;
-        "network.captive-portal-service.enabled" = false;
-        "network.connectivity-service.enabled" = false;
-        "dom.security.https_only_mode" = true;
-        "app.normandy.enabled" = false;
-        "app.normandy.api_url" = "";
-        "breakpad.reportURL" = "";
-        "browser.tabs.crashReporting.sendReport" = false;
-        "browser.crashReports.unsubmittedCheck.autoSubmit2" = false;
-        "geo.enabled" = false;
-        "permissions.default.geo" = 2;
-        "media.navigator.enabled" = false;
-        "webgl.disabled" = true;
-        "privacy.resistFingerprinting" = false;
-        "privacy.fingerprintingProtection" = true;
-        "privacy.fingerprintingProtection.overrides" = "+AllTargets,-CSSPrefersColorScheme";
-        "privacy.trackingprotection.fingerprinting.enabled" = true;
-        "privacy.trackingprotection.cryptomining.enabled" = true;
-        "browser.send_pings" = false;
-        "beacon.enabled" = false;
-        "dom.battery.enabled" = false;
-        "browser.urlbar.speculativeConnect.enabled" = false;
-        "browser.formfill.enable" = false;
-        "extensions.getAddons.showPane" = false;
-        "extensions.htmlaboutaddons.recommendations.enabled" = false;
-        "browser.contentblocking.category" = "strict";
-        "network.cookie.cookieBehavior" = 5;
-        "privacy.partition.network_state.ocsp_cache" = true;
-      };
-      userChrome = ''
-        /* Hide tab bar */
-        #TabsToolbar {
-          visibility: collapse !important;
-        }
-        /* Hide titlebar spacers */
-        .titlebar-spacer {
-          display: none !important;
-        }
-        /* Hide sidebar header */
-        #sidebar-header {
-          display: none !important;
-        }
-        /* Tokyo Night dark theme */
-        :root {
-          --toolbar-bgcolor: #1a1b26 !important;
-          --toolbar-color: #cdd6f4 !important;
-          --toolbar-field-background-color: #24283b !important;
-          --toolbar-field-color: #cdd6f4 !important;
-          --toolbar-field-border-color: #45475a !important;
-          --toolbar-field-focus-background-color: #24283b !important;
-          --toolbar-field-focus-color: #cdd6f4 !important;
-          --toolbar-field-focus-border-color: #89b4fa !important;
-          --lwt-accent-color: #1a1b26 !important;
-          --lwt-text-color: #cdd6f4 !important;
-          --arrowpanel-background: #1a1b26 !important;
-          --arrowpanel-color: #cdd6f4 !important;
-          --arrowpanel-border-color: #45475a !important;
-          --urlbar-box-bgcolor: #24283b !important;
-          --urlbar-box-hover-bgcolor: #292e42 !important;
-          --urlbar-box-active-bgcolor: #292e42 !important;
-          --sidebar-background-color: #1a1b26 !important;
-          --sidebar-text-color: #cdd6f4 !important;
-          --sidebar-border-color: #45475a !important;
-        }
-        #navigator-toolbox {
-          background: #1a1b26 !important;
-          border-bottom: 1px solid #45475a !important;
-        }
-        #nav-bar {
-          background: #1a1b26 !important;
-        }
-        #urlbar-background {
-          background: #24283b !important;
-          border: 1px solid #45475a !important;
-        }
-        #urlbar[focused] #urlbar-background {
-          border-color: #89b4fa !important;
-          box-shadow: 0 0 0 2px rgba(137, 180, 250, 0.15) !important;
-        }
-        #PersonalToolbar {
-          background: #1a1b26 !important;
-        }
-        /* Menu popups */
-        menupopup, panel, .panel-arrowcontent {
-          background: #1a1b26 !important;
-          color: #cdd6f4 !important;
-          border-color: #45475a !important;
-        }
-        #appMenu-popup {
-          background: #1a1b26 !important;
-        }
-        toolbarbutton, .toolbarbutton-icon {
-          color: #cdd6f4 !important;
-        }
-      '';
-      extensions.packages = with nur.repos.rycee.firefox-addons; [
-        sidebery
-        ublock-origin
-        new-tab-override
-        darkreader
-      ];
-      search = {
-        default = "OmniSearch";
-        engines = {
-          "OmniSearch" = {
-            urls = [{ template = "https://search.localhost/search?q={searchTerms}"; }];
-            definedAliases = [ "@o" ];
-          };
-        };
-        force = true;
-      };
-    };
-  };
 
   systemd.user.services.portless-alias-search = {
     Unit = {
@@ -263,10 +113,14 @@ in
     btop
     hyprlock
     less
-    waybar
+    rofi-wayland
     libsForQt5.qtstyleplugin-kvantum
-    kdePackages.qtstyleplugin-kvantum
+    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    noto-fonts-cjk-sans
+    noto-fonts-cjk-serif
   ];
+
+  fonts.fontconfig.enable = true;
 
   xdg.configFile."hypr".source = ./configs/hypr;
   xdg.configFile."zellij".source = ./configs/zellij;
@@ -309,12 +163,6 @@ in
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
     };
-  };
-
-  qt = {
-    enable = true;
-    platformTheme.name = "qtct";
-    style.name = "kvantum";
   };
 
   gtk = {

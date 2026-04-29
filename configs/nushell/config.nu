@@ -21,6 +21,9 @@ $env.EDITOR = "hx"
 
 $env.config.show_banner = false
 
+$env.PROMPT_COMMAND = {|| pwd | str replace $env.HOME "~" }
+$env.PROMPT_INDICATOR = "> "
+
 $env.PATH = ($env.PATH | split row (char esep) | prepend $"($env.HOME)/.local/bin")
 
 $env.PATH = ($env.PATH | split row (char esep) | prepend $"($env.HOME)/.nix-profile/bin")
